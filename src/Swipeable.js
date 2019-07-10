@@ -38,7 +38,7 @@ export default class Swipeable extends PureComponent {
   state = INITIAL_STATE;
 
   componentDidMount() {
-    window.addEventListener("touchmove", this.onDragMove);
+    window.addEventListener("touchmove", this.onDragMove, {passive: false});
     window.addEventListener("mousemove", this.onDragMove);
     window.addEventListener("touchend", this.onDragEnd);
     window.addEventListener("mouseup", this.onDragEnd);
@@ -57,13 +57,19 @@ export default class Swipeable extends PureComponent {
     this.setState({start, pristine: false, moving: true});
   });
 
-  onDragMove = withX(end => {
+  onDragMove = (e) => {
+   console.log("ONDRAGMOVE", e);
+   e.preventDefault()
+
+  return withX(end => {
     const {start, swiped, moving} = this.state;
 
     if (swiped || !moving) return;
 
     this.setState({offset: getOffset(start, end)});
+
   });
+   }
 
   onDragEnd = () => {
     const {offset, swiped, moving} = this.state;
